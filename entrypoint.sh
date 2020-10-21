@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 
 #  print missage style
