@@ -120,6 +120,12 @@ else
   echo "SOURCE_EDIT_TIME default false"
 fi
 
+if [ "${INPUT_SOURCE_FILE_WITHOUT_PREFIX}" != "true" ]; then 
+  print_info "SOURCE_EDIT_TIME provided"
+else
+  echo "SOURCE_FILE_WITHOUT_PREFIX default true"
+fi
+
 echo "--------------------"
 echo "FOR publish"
 echo "----------"
@@ -197,6 +203,12 @@ if [ "${INPUT_PUBLISH_CNAME}" != "null" ]; then
   print_info "PUBLISH_CNAME provided"
 else
   echo "PUBLISH_CNAME default null"
+fi
+
+if [ "${INPUT_PUBLISH_NOJEKYLL}" != "false"  ]; then 
+  print_info "PUBLISH_NOJEKYLL provided"
+else
+  echo "PUBLISH_NOJEKYLL default false"
 fi
 
 if [ "${INPUT_PUBLISH_PUSH_FORCE}" != "false" ]; then 
@@ -328,6 +340,11 @@ if [ ${INPUT_SOURCE2_REPO} != "null" ]; then
   else
     echo "SOURCE2_EDIT_TIME default false"
   fi
+  if [ "${INPUT_SOURCE2_FILE_WITHOUT_PREFIX}" != "true" ]; then 
+    print_info "SOURCE2_EDIT_TIME provided"
+  else
+    echo "SOURCE2_FILE_WITHOUT_PREFIX default true"
+  fi
 else
   echo "SOURCE2 default false, if need you can use two source repo to build together"
 fi
@@ -393,6 +410,11 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
     print_info "PUBLISH2_CNAME provided"
   else
     echo "PUBLISH2_CNAME default null"
+  fi
+  if [ "${INPUT_PUBLISH2_NOJEKYLL}" != "false"  ]; then 
+    print_info "PUBLISH2_NOJEKYLL provided"
+  else
+    echo "PUBLISH2_NOJEKYLL default false"
   fi
   if [ "${INPUT_PUBLISH2_PUSH_FORCE}" != "false"  ]; then 
     print_info "PUBLISH2_PUSH_FORCE provided"
@@ -474,6 +496,11 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
   else
     echo "PUBLISH3_CNAME default null"
   fi
+  if [ "${INPUT_PUBLISH3_NOJEKYLL}" != "false"  ]; then 
+    print_info "PUBLISH3_NOJEKYLL provided"
+  else
+    echo "PUBLISH3_NOJEKYLL default false"
+  fi
   if [ "${INPUT_PUBLISH3_PUSH_FORCE}" != "false"  ]; then 
     print_info "PUBLISH3_PUSH_FORCE provided"
   else
@@ -532,6 +559,10 @@ if [ $? -eq 0 ]; then  # clone success
     print_info "Message:Source git clone success and time set success"
   fi
 
+  if [ ${INPUT_SOURCE_FILE_WITHOUT_PREFIX} = "true" ] ; then
+    rm -rf local_source_temp/${INPUT_SOURCE_DIR}/.git  # remove the .git in source if exists
+    cp -rfp local_source_temp/${INPUT_SOURCE_DIR}/.*  local_source # move file without name like .nojekyll, may cause some error
+  fi
   cp -rfp local_source_temp/${INPUT_SOURCE_DIR}/*  local_source # move source with source2 to build together 
   if [ $? -eq 0 ]; then
     print_info "Message:Source git clone and move success, prepare to build"
@@ -547,6 +578,7 @@ fi
 # The following is the same with above .
 # Can use loop, but for different function later, I'm not
 
+
 if [ ${INPUT_SOURCE2_REPO} != "null" ]; then
   git clone -b ${INPUT_SOURCE2_BRANCH} https://${SOURCE2_GIT_NAME}:${SOURCE2_TOKEN}@${INPUT_SOURCE2_HUB}/${SOURCE2_REPO}.git  local_source2_temp 
   if [ $? -eq 0 ]; then
@@ -559,6 +591,10 @@ if [ ${INPUT_SOURCE2_REPO} != "null" ]; then
       print_info "Message:Source2 time set success"
     fi
 
+    if [ ${INPUT_SOURCE2_FILE_WITHOUT_PREFIX} = "true" ] ; then  # defaule true, remove file without name like .nojekyll, may cause some error
+      rm -rf local_source2_temp/${INPUT_SOURCE2_DIR}/.git  # remove the .git in source if exists
+      cp -rfp local_source2_temp/${INPUT_SOURCE2_DIR}/.*  local_source 
+    fi
     cp -rfp local_source2_temp/${INPUT_SOURCE2_DIR}/*  local_source
 
     if [ $? -eq 0 ]; then
@@ -741,6 +777,7 @@ fi
 
 # move build file to each publish dir
 cp -rfp local_source/_book/*  local_publish/${INPUT_PUBLISH_DIR}
+cp -rfp local_source/_book/.*  local_publish/${INPUT_PUBLISH_DIR}
 
 cd local_publish
 
@@ -750,6 +787,13 @@ if [ "${INPUT_PUBLISH_CNAME}" != "null" ]; then  # CNAME
   echo "${INPUT_PUBLISH_CNAME}" | sed 's/ /\n/g' | sed '/^[  ]*$/d' > CNAME
   if [ $? -eq 0 ]; then
     print_info "Message:Create CNAME success"
+  fi
+fi
+
+if [ "${INPUT_PUBLISH_NOJEKYLL}" != "true" ]; then  # add .nojekyll
+  touch .nojekyll
+  if [ $? -eq 0 ]; then
+    print_info "Message:Create .nojekyll for Publish success"
   fi
 fi
 
@@ -822,6 +866,7 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
   fi
 
   cp -rfp local_source/_book/*  local_publish2/${INPUT_PUBLISH2_DIR}
+  cp -rfp local_source/_book/.*  local_publish2/${INPUT_PUBLISH2_DIR}
   cd local_publish2
 
   if [ "${INPUT_PUBLISH2_CNAME}" != "null" ]; then  # CNAME
@@ -830,6 +875,13 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
       print_info "Message:Create Publish2_CNAME success"
     fi
   fi
+  if [ "${INPUT_PUBLISH2_NOJEKYLL}" != "true" ]; then  # add .nojekyll
+    touch .nojekyll
+    if [ $? -eq 0 ]; then
+      print_info "Message:Create .nojekyll for Publish2 success"
+    fi
+  fi
+
 
   git config --local user.name ${PUBLISH2_GIT_NAME}
   git config --local user.email ${PUBLISH2_GIT_EMAIL}
@@ -881,12 +933,20 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
   fi
 
   cp -rfp local_source/_book/*  local_publish3/${INPUT_PUBLISH3_DIR}
+  cp -rfp local_source/_book/.*  local_publish3/${INPUT_PUBLISH3_DIR}
   cd local_publish3
 
   if [ "${INPUT_PUBLISH3_CNAME}" != "null" ]; then  # CNAME
     echo "${INPUT_PUBLISH3_CNAME}" | sed 's/ /\n/g' | sed '/^[  ]*$/d' > CNAME
     if [ $? -eq 0 ]; then
       print_info "Message:Create Publish3_CNAME success"
+    fi
+  fi
+
+  if [ "${INPUT_PUBLISH3_NOJEKYLL}" != "true" ]; then  # add .nojekyll
+    touch .nojekyll
+    if [ $? -eq 0 ]; then
+      print_info "Message:Create .nojekyll for Publish3 success"
     fi
   fi
 
@@ -904,6 +964,7 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
     git add *
     git commit -m "${PUBLISH3_COMMIT_MESSAGE}"
   fi
+
 
   git push https://${PUBLISH3_GIT_NAME}:${PUBLISH3_TOKEN}@${INPUT_PUBLISH3_HUB}/${PUBLISH3_REPO}.git  ${INPUT_PUBLISH3_BRANCH}:${INPUT_PUBLISH3_BRANCH}
   if [ $? -eq 0 ]; then
