@@ -808,7 +808,7 @@ if [ ${INPUT_PUBLISH_COMMIT_HISTORY} = "false" ]  ; then # Clean commit history
 # Checkout
   git checkout --orphan latest_branch
 # Add all the files
-  git add -A
+  git add .
 # Commit the changes
   git commit -am "${PUBLISH_COMMIT_MESSAGE}"
 # Delete the branch
@@ -823,7 +823,7 @@ if [ ${INPUT_PUBLISH_COMMIT_HISTORY} = "false" ]  ; then # Clean commit history
 #  git checkout -b ${INPUT_PUBLISH_BRANCH}
   print_info "Message:Clean commit history success"
 else
-  git add *
+  git add .
   git commit -m "${PUBLISH_COMMIT_MESSAGE}"
 fi
 
@@ -888,13 +888,13 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
 
   if [ ${INPUT_PUBLISH2_COMMIT_HISTORY}  = "false" ] ; then 
     git checkout --orphan latest_branch
-    git add -A
+    git add .
     git commit -am "${PUBLISH2_COMMIT_MESSAGE}"
     git branch -D ${INPUT_PUBLISH2_BRANCH}
     git branch -m ${INPUT_PUBLISH2_BRANCH}
     print_info "Message:Clean publish2 commit history sucess"
   else
-    git add *
+    git add .
     git commit -m "${PUBLISH2_COMMIT_MESSAGE}"
   fi
 
@@ -955,13 +955,13 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
 
   if [ ${INPUT_PUBLISH3_COMMIT_HISTORY}  = "false" ] ; then 
     git checkout --orphan latest_branch
-    git add -A
+    git add .
     git commit -am "${PUBLISH3_COMMIT_MESSAGE}"
     git branch -D ${INPUT_PUBLISH3_BRANCH}
     git branch -m ${INPUT_PUBLISH3_BRANCH}
     print_info "Message:Clean publish3 commit history sucess"
   else
-    git add *
+    git add .
     git commit -m "${PUBLISH3_COMMIT_MESSAGE}"
   fi
 
