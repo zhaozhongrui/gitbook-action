@@ -223,9 +223,11 @@ else
   echo "PUBLISH_REMOVE_LAST_BUILD default true"
 fi
 
-if [[ "${INPUT_PUBLISH_COMMIT_HISTORY}" = "false" && "${INPUT_PUBLISH_PUSH_FORCE}" = "false" ]]; then 
-  print_error "3108:You set publish_commit_history:false , must set publish_push_force:true at same time"
-  
+if [ "${INPUT_PUBLISH_COMMIT_HISTORY}" = "false" ]; then
+  print_warning "3305-0: Pay Attention:You allow push force"
+  if [ "${INPUT_PUBLISH_PUSH_FORCE}" = "false" ]; then 
+    print_error "3108:You set publish_commit_history:false , must set publish_push_force:true at same time"
+  fi
 fi
 
 
