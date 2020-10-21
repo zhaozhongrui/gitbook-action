@@ -16,7 +16,7 @@ jobs:
     - name: Gitbook Action
       uses: zhaozhongrui/gitbook-action@master
       with:
-        token: ${{ TOKEN }}
+        token: ${{ secrets.TOKEN }}
         time_zone: Asia/Shanghai
         source_dir: gitbook-source
         source_edit_time: true
