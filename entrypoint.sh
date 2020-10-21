@@ -561,9 +561,11 @@ if [ $? -eq 0 ]; then  # clone success
 
   if [ ${INPUT_SOURCE_FILE_WITHOUT_PREFIX} = "true" ] ; then
     rm -rf local_source_temp/${INPUT_SOURCE_DIR}/.git  # remove the .git in source if exists
-    cp -rfp local_source_temp/${INPUT_SOURCE_DIR}/.*  local_source # move file without name like .nojekyll, may cause some error
+    cp -rfp local_source_temp/${INPUT_SOURCE_DIR}/.  local_source # move file without name like .nojekyll, may cause some error
+  else
+    cp -rfp local_source_temp/${INPUT_SOURCE_DIR}/*  local_source # move source with source2 to build together 
   fi
-  cp -rfp local_source_temp/${INPUT_SOURCE_DIR}/*  local_source # move source with source2 to build together 
+
   if [ $? -eq 0 ]; then
     print_info "Message:Source git clone and move success, prepare to build"
   else  # git clone success but the gitbook source dir set wrong
@@ -593,10 +595,10 @@ if [ ${INPUT_SOURCE2_REPO} != "null" ]; then
 
     if [ ${INPUT_SOURCE2_FILE_WITHOUT_PREFIX} = "true" ] ; then  # defaule true, remove file without name like .nojekyll, may cause some error
       rm -rf local_source2_temp/${INPUT_SOURCE2_DIR}/.git  # remove the .git in source if exists
-      cp -rfp local_source2_temp/${INPUT_SOURCE2_DIR}/.*  local_source 
+      cp -rfp local_source2_temp/${INPUT_SOURCE2_DIR}/.  local_source 
+    else
+      cp -rfp local_source2_temp/${INPUT_SOURCE2_DIR}/*  local_source
     fi
-    cp -rfp local_source2_temp/${INPUT_SOURCE2_DIR}/*  local_source
-
     if [ $? -eq 0 ]; then
       print_warning "3301:Source2 git success. It will replace what we git before, when have same file"
     else
@@ -776,8 +778,7 @@ if [ ${INPUT_PUBLISH_REMOVE_LAST_BUILD} = "true" ] ; then
 fi
 
 # move build file to each publish dir
-cp -rfp local_source/_book/*  local_publish/${INPUT_PUBLISH_DIR}
-cp -rfp local_source/_book/.*  local_publish/${INPUT_PUBLISH_DIR}
+cp -rfp local_source/_book/.  local_publish/${INPUT_PUBLISH_DIR}
 
 cd local_publish
 
@@ -865,8 +866,7 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
     cd ..
   fi
 
-  cp -rfp local_source/_book/*  local_publish2/${INPUT_PUBLISH2_DIR}
-  cp -rfp local_source/_book/.*  local_publish2/${INPUT_PUBLISH2_DIR}
+  cp -rfp local_source/_book/.  local_publish2/${INPUT_PUBLISH2_DIR}
   cd local_publish2
 
   if [ "${INPUT_PUBLISH2_CNAME}" != "null" ]; then  # CNAME
@@ -932,8 +932,7 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
     cd ..
   fi
 
-  cp -rfp local_source/_book/*  local_publish3/${INPUT_PUBLISH3_DIR}
-  cp -rfp local_source/_book/.*  local_publish3/${INPUT_PUBLISH3_DIR}
+  cp -rfp local_source/_book/.  local_publish3/${INPUT_PUBLISH3_DIR}
   cd local_publish3
 
   if [ "${INPUT_PUBLISH3_CNAME}" != "null" ]; then  # CNAME
