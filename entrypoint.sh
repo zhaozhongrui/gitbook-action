@@ -626,7 +626,7 @@ else  # can't git clone this repo.branch try git clone this repo
     cd local_publish
     git checkout --orphan  ${INPUT_PUBLISH_BRANCH}
     git rm -rf .
-    git add .
+    git add -A
     git commit -m "Initial commit"
     cd ..
     print_warning "3302:Can't find this publish_branch, but find this repo, we checkout new branch"
@@ -648,7 +648,7 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
       cd local_publish2
       git checkout --orphan  ${INPUT_PUBLISH2_BRANCH}
       git rm -rf .
-      git add .
+      git add -A
       git commit -m "Initial commit"
       cd ..
       print_warning "3302-2:Can't find this publish2_branch, but find this repo, we checkout new branch"
@@ -669,7 +669,7 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
       cd local_publish3
       git checkout --orphan  ${INPUT_PUBLISH3_BRANCH}
       git rm -rf .
-      git add .
+      git add -A
       git commit -m "Initial commit"
       cd ..
       print_warning "3302-3:Can't find this publish3_branch, but find this repo, we checkout new branch"
