@@ -23,6 +23,6 @@ jobs:
         publish_nojekyll: true
         publish_commit_message: ${{ github.event.head_commit.message }}
         publish_commit_history: false
-        publish_push_force: true
+        publish_push_force: false
 
 
