@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 
 #  print missage style
@@ -790,7 +790,7 @@ if [ "${INPUT_PUBLISH_CNAME}" != "null" ]; then  # CNAME
   fi
 fi
 
-if [ "${INPUT_PUBLISH_NOJEKYLL}" != "true" ]; then  # add .nojekyll
+if [ "${INPUT_PUBLISH_NOJEKYLL}" != "false" ]; then  # add .nojekyll
   touch .nojekyll
   if [ $? -eq 0 ]; then
     print_info "Message:Create .nojekyll for Publish success"
@@ -875,7 +875,7 @@ if [ ${INPUT_PUBLISH2_REPO} != "null" ]; then
       print_info "Message:Create Publish2_CNAME success"
     fi
   fi
-  if [ "${INPUT_PUBLISH2_NOJEKYLL}" != "true" ]; then  # add .nojekyll
+  if [ "${INPUT_PUBLISH2_NOJEKYLL}" != "false" ]; then  # add .nojekyll
     touch .nojekyll
     if [ $? -eq 0 ]; then
       print_info "Message:Create .nojekyll for Publish2 success"
@@ -943,7 +943,7 @@ if [ ${INPUT_PUBLISH3_REPO} != "null" ]; then
     fi
   fi
 
-  if [ "${INPUT_PUBLISH3_NOJEKYLL}" != "true" ]; then  # add .nojekyll
+  if [ "${INPUT_PUBLISH3_NOJEKYLL}" != "false" ]; then  # add .nojekyll
     touch .nojekyll
     if [ $? -eq 0 ]; then
       print_info "Message:Create .nojekyll for Publish3 success"
